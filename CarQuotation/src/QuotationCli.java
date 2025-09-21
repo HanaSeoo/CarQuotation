@@ -24,20 +24,20 @@ public class QuotationCli {
     // 현재까지 선택한 항목들을 '장바구니'처럼 보여주는 메소드
     public static void displayShoppingCart(Car car, Trim trim, List<Option> selectedOptions, long currentPrice, NumberFormat formatter) {
         System.out.println("=======================================================");
-        System.out.println("🛒 현재 선택하신 내역 (장바구니)");
+        System.out.println(" 현재 선택하신 내역 (장바구니)");
         System.out.println("-------------------------------------------------------");
         System.out.printf("  %-12s | %s\n", "차종", car.name);
         System.out.printf("  %-12s | %s\n", "트림", trim.name);
 
         if (!selectedOptions.isEmpty()) {
             System.out.println("  -----------------------------------------------------");
-            System.out.printf("  %-12s | \n", "추가 옵션");
+            System.out.printf("  %-12s | \n", "옵션");
             for (Option opt : selectedOptions) {
                  System.out.printf("  %-12s |    - %s (+%,d원)\n", "", opt.name, opt.price);
             }
         }
         System.out.println("-------------------------------------------------------");
-        System.out.printf("  중간 합계: %s원\n", formatter.format(currentPrice).replace("₩", ""));
+        System.out.printf("  합계: %s원\n", formatter.format(currentPrice).replace("₩", ""));
         System.out.println("=======================================================\n");
     }
 
@@ -61,7 +61,7 @@ public class QuotationCli {
 
         while(isRunning) {
             clearScreen();
-            System.out.println("🚗 기아 EV 시리즈 견적 프로그램을 시작합니다.");
+            System.out.println("원더굿라이프 신차 견적 프로그램을 시작합니다.");
 
             System.out.println("\n--- 0. 차종 선택 ---");
             List<String> carNames = CarDatabase.getCarNames();
@@ -96,7 +96,7 @@ public class QuotationCli {
             	
                 clearScreen();
                 displayShoppingCart(selectedCar, selectedTrim, selectedOptionsList, totalPrice, currencyFormatter);
-                System.out.println("--- 🎨 색상 및 추가 옵션 선택 ---");
+                System.out.println("--- 색상 및 추가 옵션 선택 ---");
                 System.out.println("원하는 항목의 번호를 입력하여 추가/해제 하세요 (완료 시 0 입력)");
 
                 for (int i = 0; i < availableOptions.size(); i++) {
