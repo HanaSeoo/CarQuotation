@@ -32,7 +32,6 @@
 
 ```
 CarQuotation/
-├── .gitignore
 └── src/
     ├── DataModels.java      # 자동차, 트림, 옵션의 데이터 형태를 정의
     ├── CarDatabase.java     # 5개 차종의 모든 가격 정보를 데이터로 관리
