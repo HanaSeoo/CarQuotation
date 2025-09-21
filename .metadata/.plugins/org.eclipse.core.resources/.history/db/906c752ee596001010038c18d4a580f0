@@ -1,0 +1,189 @@
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+// 데이터 저장을 위한 클래스들
+class Option {
+    String name;
+    long price;
+    List<String> prerequisites = new ArrayList<>(); // 선행 조건 옵션
+
+    Option(String name, long price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    Option(String name, long price, String... prerequisites) {
+        this.name = name;
+        this.price = price;
+        this.prerequisites.addAll(Arrays.asList(prerequisites));
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%,d원)", name, price);
+    }
+}
+
+class Trim {
+    String name;
+    long price;
+    List<Option> availableOptions;
+
+    Trim(String name, long price, List<Option> availableOptions) {
+        this.name = name;
+        this.price = price;
+        this.availableOptions = availableOptions;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (기본 %,d원)", name, price);
+    }
+}
+
+public class QuotationCli {
+
+    // EV4 데이터 초기화
+    private static final Map<String, Trim> ev4Trims = new HashMap<>();
+    private static final List<Option> ev4Colors = new ArrayList<>();
+
+    static {
+        // --- EV4 옵션 데이터 ---
+        // 공통 옵션
+        Option driveWise = new Option("드라이브 와이즈", 1280000);
+        Option utility = new Option("유틸리티", 400000);
+        Option wideSunroof = new Option("와이드 선루프", 640000, "스타일");
+        Option builtInCam = new Option("빌트인 캠 2 플러스", 450000);
+        Option hud = new Option("헤드업 디스플레이", 590000, "모니터링");
+        Option harmanKardon = new Option("하만카돈 프리미엄 사운드", 640000);
+        Option nineteenInchWheel = new Option("19인치 휠&타이어", 490000);
+
+        // 에어 전용 옵션
+        Option style = new Option("스타일", 740000);
+        Option comfort = new Option("컴포트", 890000);
+        Option convenience = new Option("컨비니언스", 890000);
+        Option monitoring = new Option("모니터링", 1040000);
+        
+        List<Option> airOptions = Arrays.asList(style, comfort, convenience, nineteenInchWheel, monitoring, driveWise, utility, wideSunroof, builtInCam, hud);
+        List<Option> earthOptions = Arrays.asList(nineteenInchWheel, driveWise, utility, wideSunroof, harmanKardon, builtInCam, hud);
+        List<Option> gtLineOptions = Arrays.asList(driveWise, utility, wideSunroof, harmanKardon, builtInCam, hud);
+
+        // --- EV4 트림 데이터 ---
+        ev4Trims.put("에어 스탠다드", new Trim("에어 스탠다드", 40420000, airOptions));
+        ev4Trims.put("에어 롱레인지", new Trim("에어 롱레인지", 44620000, airOptions));
+        ev4Trims.put("어스 스탠다드", new Trim("어스 스탠다드", 45010000, earthOptions));
+        ev4Trims.put("어스 롱레인지", new Trim("어스 롱레인지", 49210000, earthOptions));
+        ev4Trims.put("GT-line 스탠다드", new Trim("GT-line 스탠다드", 46110000, gtLineOptions));
+        ev4Trims.put("GT-line 롱레인지", new Trim("GT-line 롱레인지", 50310000, gtLineOptions));
+
+        // --- EV4 색상 데이터 ---
+        ev4Colors.add(new Option("기본 컬러", 0));
+        ev4Colors.add(new Option("스노우 화이트 펄", 80000));
+        ev4Colors.add(new Option("아이보리 매트 실버", 300000));
+        ev4Colors.add(new Option("요트 매트 블루", 300000));
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.KOREA);
+
+        System.out.println("🚗 EV4 견적 프로그램을 시작합니다.");
+        
+        // 1. 트림 선택
+        System.out.println("\n--- 1. 트림 선택 ---");
+        List<String> trimNames = new ArrayList<>(ev4Trims.keySet());
+        for (int i = 0; i < trimNames.size(); i++) {
+            System.out.printf("%d. %s\n", i + 1, ev4Trims.get(trimNames.get(i)));
+        }
+        System.out.print("원하는 트림의 번호를 입력하세요: ");
+        int trimChoice = Integer.parseInt(scanner.nextLine()) - 1;
+        Trim selectedTrim = ev4Trims.get(trimNames.get(trimChoice));
+
+        long totalPrice = selectedTrim.price;
+        List<Option> selectedOptions = new ArrayList<>();
+        
+        // 2. 색상 선택
+        System.out.println("\n--- 2. 외장 색상 선택 ---");
+        for(int i = 0; i < ev4Colors.size(); i++) {
+            System.out.printf("%d. %s\n", i + 1, ev4Colors.get(i));
+        }
+        System.out.print("원하는 색상의 번호를 입력하세요: ");
+        int colorChoice = Integer.parseInt(scanner.nextLine()) - 1;
+        Option selectedColor = ev4Colors.get(colorChoice);
+        totalPrice += selectedColor.price;
+
+        // 3. 옵션 선택
+        System.out.println("\n--- 3. 추가 옵션 선택 ---");
+        List<Option> availableOptions = selectedTrim.availableOptions;
+        while (true) {
+            System.out.println("선택 가능한 옵션 목록:");
+            for (int i = 0; i < availableOptions.size(); i++) {
+                Option opt = availableOptions.get(i);
+                boolean isSelected = selectedOptions.contains(opt);
+                String prerequisitesInfo = opt.prerequisites.isEmpty() ? "" : " (선행: " + String.join(", ", opt.prerequisites) + ")";
+                System.out.printf("%d. %s %s %s\n", i + 1, opt, prerequisitesInfo, isSelected ? "[선택됨]" : "");
+            }
+            System.out.print("추가할 옵션의 번호를 입력하세요 (선택 완료 시 0 입력): ");
+            int optionChoice = Integer.parseInt(scanner.nextLine());
+
+            if (optionChoice == 0) {
+                break;
+            }
+
+            Option chosenOption = availableOptions.get(optionChoice - 1);
+            
+            // 선행 조건 체크
+            boolean prerequisitesMet = true;
+            if (!chosenOption.prerequisites.isEmpty()) {
+                for(String preqName : chosenOption.prerequisites) {
+                    boolean found = false;
+                    for(Option selectedOpt : selectedOptions) {
+                        if(selectedOpt.name.equals(preqName)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        System.out.printf("!! 경고: '%s' 옵션을 선택하려면 '%s' 옵션이 먼저 선택되어야 합니다.\n", chosenOption.name, preqName);
+                        prerequisitesMet = false;
+                        break;
+                    }
+                }
+            }
+
+            if(prerequisitesMet && !selectedOptions.contains(chosenOption)) {
+                selectedOptions.add(chosenOption);
+                totalPrice += chosenOption.price;
+                System.out.printf("-> '%s' 옵션이 추가되었습니다.\n", chosenOption.name);
+            } else if (selectedOptions.contains(chosenOption)) {
+                System.out.println("-> 이미 선택된 옵션입니다.");
+            }
+        }
+        
+        // 4. 최종 견적 출력
+        System.out.println("\n--- 📜 최종 견적서 ---");
+        System.out.println("차종: Kia EV4");
+        System.out.println("트림: " + selectedTrim.name);
+        System.out.println("외장 색상: " + selectedColor.name);
+        System.out.println("추가 옵션:");
+        if (selectedOptions.isEmpty()) {
+            System.out.println("- 선택 안함");
+        } else {
+            for (Option opt : selectedOptions) {
+                System.out.println("- " + opt.name);
+            }
+        }
+        System.out.println("--------------------");
+        System.out.printf("총 가격: %s원\n", currencyFormatter.format(totalPrice).replace("₩", ""));
+        System.out.println("--------------------");
+
+        scanner.close();
+    }
+}
