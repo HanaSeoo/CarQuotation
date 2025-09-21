@@ -1,0 +1,13 @@
+# Eclipse/STS workspace files
+.metadata
+.classpath
+.project
+.settings/
+
+# Compiled output
+bin/
+build/
+target/
+
+# Log files
+*.log
