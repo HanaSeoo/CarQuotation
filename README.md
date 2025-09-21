@@ -18,6 +18,17 @@
 
 * **재현성 (Reproducibility)**
     * 본 README에 IDE 없이 **터미널 환경에서도 직접 컴파일하고 실행할 수 있는 방법**을 명시하여, 어떤 환경에서든 프로그램을 쉽게 검증하고 재현할 수 있도록 했습니다.
+    * 또한 gif를 활용하여 예시를 준비하였습니다.
+      ![정상작동](https://github.com/user-attachments/assets/edd121ee-c1f0-4263-aae9-8b60544a61d5)
+
+    * ![숫자가 아닌 문자를 적을 시 예외처리](https://github.com/user-attachments/assets/ea0e371d-0201-4782-aa07-16b49f68fb65)
+
+    * ![옵션 미선택 시 기본으로 자동적용](https://github.com/user-attachments/assets/4fd33ca4-e9b1-49fe-a06b-966250081e79)
+
+    * ![보기에 존재하지 않는 번호를 적었을 때 예외처리](https://github.com/user-attachments/assets/09e26765-1276-49f2-9864-ef027c199ffc)
+
+    * ![사전옵션을 선택해야 당 옵션이 선택되도록 예외처리](https://github.com/user-attachments/assets/47554078-9b19-4327-9b3e-ad0adc8d6022)
+
 
 * **깔끔함 및 사용자 경험(UX) 개선**
     * **입력값 예외 처리**: 사용자가 숫자가 아닌 문자나 범위를 벗어나는 숫자를 입력했을 경우, 프로그램이 비정상적으로 종료되지 않고 다시 입력을 요청하도록 방어 로직을 추가하여 안정성을 높였습니다.
