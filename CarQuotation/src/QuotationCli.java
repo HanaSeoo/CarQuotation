@@ -72,6 +72,7 @@ public class QuotationCli {
                 try { Thread.sleep(2000); } catch (InterruptedException e) {}
                 continue;
             }
+            
             Car selectedCar = CarDatabase.getCar(carNames.get(carChoice));
             
             clearScreen();
@@ -92,6 +93,7 @@ public class QuotationCli {
             availableOptions.addAll(selectedTrim.availableOptions);
 
             while (true) {
+            	
                 clearScreen();
                 displayShoppingCart(selectedCar, selectedTrim, selectedOptionsList, totalPrice, currencyFormatter);
                 System.out.println("--- 🎨 색상 및 추가 옵션 선택 ---");
